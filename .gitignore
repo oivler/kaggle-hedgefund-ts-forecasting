@@ -1,0 +1,11 @@
+# Kaggle competition data (not redistributable)
+ts-forecasting/
+
+# Notebook execution output
+model_executed.ipynb
+submission.csv
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
