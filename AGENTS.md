@@ -18,9 +18,11 @@ The notebook expects Parquet files at `ts-forecasting/train.parquet` and `ts-for
 **To get the real data**, use the Kaggle CLI with credentials from environment secrets:
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
+export KAGGLE_API_TOKEN="$KAGGLE_KEY"
 kaggle competitions download -c ts-forecasting -p ts-forecasting/
+unzip -o ts-forecasting/ts-forecasting.zip -d ts-forecasting/ && rm ts-forecasting/ts-forecasting.zip
 ```
-This requires `KAGGLE_USERNAME` and `KAGGLE_KEY` secrets to be configured.
+This requires `KAGGLE_KEY` secret (a `KGAT_`-prefixed API token from kaggle.com/settings). The new Kaggle API (v2, CLI 2.0) uses `KAGGLE_API_TOKEN` env var — the secret is stored as `KAGGLE_KEY` so must be re-exported as shown above.
 
 **If Kaggle credentials are unavailable**, a synthetic dataset can be generated for environment verification (see the data-generation script in the setup process). The notebook will run end-to-end on synthetic data but scores will be meaningless.
 
@@ -42,3 +44,5 @@ jupyter lab --no-browser --port=8888 --ip=0.0.0.0 --ServerApp.token='' --ServerA
 - pip installs to `~/.local/bin` which is not on PATH by default; always prepend `export PATH="$HOME/.local/bin:$PATH"` or add it to `~/.bashrc`.
 - The notebook has no formal linting or test suite. Validation is done by executing the notebook end-to-end and checking that `submission.csv` is produced with the correct shape.
 - With small/synthetic datasets, LightGBM's `min_child_samples` (200–250) may cause early stopping to trigger immediately. This is expected and not an error.
+- The real dataset is ~880MB (740MB train + 140MB test). Full notebook execution takes ~30 minutes on a 2-CPU cloud VM. Increase `--ExecutePreprocessor.timeout` to at least 1800 when running with real data.
+- The downloaded zip must be extracted (`unzip`) before the notebook can read the Parquet files.
